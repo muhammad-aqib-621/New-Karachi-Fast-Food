@@ -1,0 +1,6 @@
+{
+  "name": "New Karachi Fast Food & Special Falooda",
+  "description": "Order delicious crispy zinger burgers, supreme loaded pizzas, signature royal falooda, and crispy broast with lightning-fast delivery and takeout.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
