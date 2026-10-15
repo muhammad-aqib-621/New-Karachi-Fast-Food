@@ -79,6 +79,8 @@ export const FaloodaSpotlight: React.FC = () => {
               <img
                 src={FOOD_ASSETS.specialFalooda}
                 alt="New Karachi Signature Royal Falooda Kulfa with rose syrup, vermicelli, rabri and cherry"
+                loading="lazy"
+                decoding="async"
                 referrerPolicy="no-referrer"
                 className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
               />

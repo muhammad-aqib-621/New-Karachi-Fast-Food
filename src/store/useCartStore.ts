@@ -1,11 +1,12 @@
 import { create } from 'zustand';
-import { BRANCH_LOCATIONS, PROMO_CODES } from '../data/menuData';
-import { BranchLocation, CartItem, MenuItem, OrderType, SelectedCustomization } from '../types/restaurant';
+import { BRANCH_LOCATIONS, DELIVERY_DISTANCE_BANDS, PROMO_CODES } from '../data/menuData';
+import { BranchLocation, CartItem, DeliveryDistanceBand, MenuItem, OrderType, SelectedCustomization } from '../types/restaurant';
 
 interface CartState {
   items: CartItem[];
   isCartOpen: boolean;
   orderType: OrderType;
+  deliveryDistanceBand: DeliveryDistanceBand | null;
   selectedBranchId: string;
   promoCode: string | null;
   promoDiscountPercent: number;
@@ -15,6 +16,7 @@ interface CartState {
   // Actions
   toggleCart: (isOpen?: boolean) => void;
   setOrderType: (type: OrderType) => void;
+  setDeliveryDistanceBand: (band: DeliveryDistanceBand) => void;
   setSelectedBranchId: (branchId: string) => void;
   addItem: (item: MenuItem, customization: SelectedCustomization, quantity?: number) => void;
   updateQuantity: (cartItemId: string, delta: number) => void;
@@ -44,6 +46,7 @@ export const useCartStore = create<CartState>((set, get) => ({
   items: [],
   isCartOpen: false,
   orderType: 'delivery',
+  deliveryDistanceBand: null,
   selectedBranchId: 'dhq-main',
   promoCode: null,
   promoDiscountPercent: 0,
@@ -56,6 +59,8 @@ export const useCartStore = create<CartState>((set, get) => ({
     })),
 
   setOrderType: (type) => set({ orderType: type }),
+
+  setDeliveryDistanceBand: (band) => set({ deliveryDistanceBand: band }),
 
   setSelectedBranchId: (branchId) => set({ selectedBranchId: branchId }),
 
@@ -123,6 +128,7 @@ export const useCartStore = create<CartState>((set, get) => ({
   clearCart: () => {
     set({
       items: [],
+      deliveryDistanceBand: null,
       promoCode: null,
       promoDiscountPercent: 0,
       promoFreeDelivery: false,
@@ -186,14 +192,11 @@ export const useCartStore = create<CartState>((set, get) => ({
   },
 
   getDeliveryFee: () => {
-    const { orderType, promoFreeDelivery } = get();
+    const { orderType, deliveryDistanceBand, promoFreeDelivery } = get();
     if (orderType === 'pickup') return 0;
     if (promoFreeDelivery) return 0;
-    const subtotal = get().getSubtotal();
-    if (subtotal === 0) return 0;
-    // Free delivery over Rs. 1500
-    if (subtotal >= 1500) return 0;
-    return 150; // Standard express local delivery Rs. 150
+    if (!deliveryDistanceBand) return 0;
+    return DELIVERY_DISTANCE_BANDS.find((band) => band.id === deliveryDistanceBand)?.fee ?? 0;
   },
 
   getTotal: () => {

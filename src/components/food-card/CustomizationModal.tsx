@@ -93,6 +93,8 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({ item, is
             <img
               src={item.image}
               alt={item.name}
+              loading="lazy"
+              decoding="async"
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover"
             />

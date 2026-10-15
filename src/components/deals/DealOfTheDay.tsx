@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Sparkles, Plus, Check } from 'lucide-react';
 import { useCartStore } from '../../store/useCartStore';
 import { MENU_ITEMS } from '../../data/menuData';
@@ -6,27 +6,6 @@ import { MENU_ITEMS } from '../../data/menuData';
 export const DealOfTheDay: React.FC = () => {
   const addItem = useCartStore((s) => s.addItem);
   const [added, setAdded] = useState(false);
-
-  // Dynamic countdown timer for the daily deal
-  const [timeLeft, setTimeLeft] = useState({ hours: 4, minutes: 28, seconds: 45 });
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev.seconds > 0) {
-          return { ...prev, seconds: prev.seconds - 1 };
-        } else if (prev.minutes > 0) {
-          return { ...prev, minutes: 59, seconds: 59 };
-        } else if (prev.hours > 0) {
-          return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        } else {
-          return { hours: 6, minutes: 0, seconds: 0 };
-        }
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
 
   const dealItem = MENU_ITEMS.find((item) => item.id === 'deal-2') || MENU_ITEMS[0];
 
@@ -48,7 +27,7 @@ export const DealOfTheDay: React.FC = () => {
             <div className="flex-1 space-y-4">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-400 text-xs font-bold">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>LIMITED TIME DEAL OF THE DAY</span>
+                <span>TODAY'S DEAL</span>
               </div>
 
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
@@ -76,30 +55,11 @@ export const DealOfTheDay: React.FC = () => {
               </div>
             </div>
 
-            {/* Right: Dynamic Countdown & CTA Button */}
+            {/* Order CTA */}
             <div className="flex flex-col sm:flex-row lg:flex-col items-center gap-6 shrink-0 w-full lg:w-auto">
-              {/* Countdown Blocks */}
-              <div className="flex items-center gap-2.5">
-                <div className="flex flex-col items-center justify-center w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white shadow-inner">
-                  <span className="text-xl font-black tabular-nums text-amber-600 dark:text-amber-400">
-                    {String(timeLeft.hours).padStart(2, '0')}
-                  </span>
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold">HOURS</span>
-                </div>
-                <span className="text-xl font-bold text-slate-400 dark:text-slate-600">:</span>
-                <div className="flex flex-col items-center justify-center w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white shadow-inner">
-                  <span className="text-xl font-black tabular-nums text-amber-600 dark:text-amber-400">
-                    {String(timeLeft.minutes).padStart(2, '0')}
-                  </span>
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold">MINS</span>
-                </div>
-                <span className="text-xl font-bold text-slate-400 dark:text-slate-600">:</span>
-                <div className="flex flex-col items-center justify-center w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white shadow-inner">
-                  <span className="text-xl font-black tabular-nums text-amber-600 dark:text-amber-400">
-                    {String(timeLeft.seconds).padStart(2, '0')}
-                  </span>
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold">SECS</span>
-                </div>
+              <div className="flex flex-col items-center justify-center min-w-40 p-4 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center">
+                <span className="text-lg font-black text-amber-600 dark:text-amber-400">Combo deal</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400">Save Rs. 351</span>
               </div>
 
               {/* Claim Button */}

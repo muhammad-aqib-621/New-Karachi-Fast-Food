@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, Tag, Bike, Store, CheckCircle2 } from 'lucide-react';
+import { DELIVERY_DISTANCE_BANDS } from '../../data/menuData';
 import { useCartStore } from '../../store/useCartStore';
 
 interface CartDrawerProps {
@@ -11,10 +12,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToCheckout }) =
   const isCartOpen = useCartStore((s) => s.isCartOpen);
   const toggleCart = useCartStore((s) => s.toggleCart);
   const items = useCartStore((s) => s.items);
+  const itemCount = useCartStore((s) => s.getItemCount());
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
   const orderType = useCartStore((s) => s.orderType);
   const setOrderType = useCartStore((s) => s.setOrderType);
+  const deliveryDistanceBand = useCartStore((s) => s.deliveryDistanceBand);
+  const setDeliveryDistanceBand = useCartStore((s) => s.setDeliveryDistanceBand);
   const selectedBranch = useCartStore((s) => s.getSelectedBranch());
 
   const promoCode = useCartStore((s) => s.promoCode);
@@ -29,6 +33,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToCheckout }) =
 
   const [promoInput, setPromoInput] = useState('');
   const [promoError, setPromoError] = useState<string | null>(null);
+
+  const handleDeliveryDistanceChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedBand = DELIVERY_DISTANCE_BANDS.find((band) => band.id === event.currentTarget.value);
+    if (selectedBand) setDeliveryDistanceBand(selectedBand.id);
+  };
 
   const handleApplyPromo = (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,6 +75,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToCheckout }) =
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 26, stiffness: 260 }}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="cart-title"
               className="w-screen max-w-md bg-slate-900 border-l border-slate-800 text-slate-100 shadow-2xl flex flex-col justify-between"
             >
               {/* Drawer Header */}
@@ -75,9 +87,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToCheckout }) =
                     <ShoppingBag className="w-5 h-5" />
                   </div>
                   <div className="text-left">
-                    <h2 className="text-base font-extrabold text-white">Your Order</h2>
+                    <h2 id="cart-title" className="text-base font-extrabold text-white">Your Order</h2>
                     <p className="text-xs text-slate-400">
-                      {items.length} {items.length === 1 ? 'item' : 'items'} in basket
+                      {itemCount} {itemCount === 1 ? 'item' : 'items'} in basket
                     </p>
                   </div>
                 </div>
@@ -105,7 +117,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToCheckout }) =
                     }`}
                   >
                     <Bike className="w-3.5 h-3.5" />
-                    <span>Delivery (Rs. {deliveryFee === 0 ? 'FREE' : deliveryFee})</span>
+                    <span>
+                      Delivery {deliveryDistanceBand ? `(Rs. ${deliveryFee})` : '(Select distance)'}
+                    </span>
                   </button>
                   <button
                     type="button"
@@ -122,8 +136,27 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToCheckout }) =
                 </div>
                 <div className="mt-1.5 px-1 flex items-center justify-between text-[11px] text-slate-400">
                   <span className="truncate">Branch: {selectedBranch.shortName}</span>
-                  <span className="text-amber-400 shrink-0 font-medium">10 AM – 2 AM</span>
+                  <span className="text-amber-400 shrink-0 font-medium">{selectedBranch.timing}</span>
                 </div>
+                {orderType === 'delivery' && (
+                  <label className="block mt-3 text-left">
+                    <span className="block mb-1 text-[11px] font-semibold text-slate-300">
+                      Estimated distance (branch confirms)
+                    </span>
+                    <select
+                      value={deliveryDistanceBand ?? ''}
+                      onChange={handleDeliveryDistanceChange}
+                      className="w-full p-2 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white focus:border-amber-500 focus:outline-none"
+                    >
+                      <option value="" disabled>Select distance from the branch</option>
+                      {DELIVERY_DISTANCE_BANDS.map((band) => (
+                        <option key={band.id} value={band.id}>
+                          {band.label} · {band.fee === 0 ? 'Free' : `Rs. ${band.fee}`}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
               </div>
 
               {/* Cart Items List */}
@@ -157,6 +190,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToCheckout }) =
                           <img
                             src={menuItem.image}
                             alt={menuItem.name}
+                            loading="lazy"
+                            decoding="async"
                             referrerPolicy="no-referrer"
                             className="w-14 h-14 rounded-xl object-cover shrink-0 bg-slate-900 border border-slate-800"
                           />
@@ -315,21 +350,20 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToCheckout }) =
                     <div className="flex justify-between">
                       <span>
                         Delivery Fee{' '}
-                        {orderType === 'delivery' && subtotal >= 1500 && (
-                          <span className="text-[10px] text-amber-400 font-bold ml-1">
-                            (Free over Rs. 1500)
-                          </span>
-                        )}
                       </span>
                       <span className="font-semibold text-slate-200 tabular-nums">
-                        {deliveryFee === 0 ? 'FREE' : `Rs. ${deliveryFee}`}
+                        {orderType === 'delivery' && !deliveryDistanceBand
+                          ? 'Select distance above'
+                          : deliveryFee === 0 ? 'FREE' : `Rs. ${deliveryFee}`}
                       </span>
                     </div>
 
                     <div className="pt-2 border-t border-slate-800 flex justify-between text-sm sm:text-base font-extrabold text-white">
                       <span>Total Amount</span>
                       <span className="text-amber-400 tabular-nums">
-                        Rs. {total.toLocaleString()}
+                        {orderType === 'delivery' && !deliveryDistanceBand
+                          ? 'Select distance'
+                          : `Rs. ${total.toLocaleString()}`}
                       </span>
                     </div>
                   </div>
@@ -338,9 +372,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToCheckout }) =
                   <button
                     type="button"
                     onClick={handleProceed}
-                    className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl font-bold text-sm sm:text-base text-slate-950 bg-amber-500 hover:bg-amber-400 active:scale-95 transition-all shadow-lg shadow-amber-500/25 cursor-pointer"
+                    disabled={orderType === 'delivery' && !deliveryDistanceBand}
+                    className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl font-bold text-sm sm:text-base text-slate-950 bg-amber-500 hover:bg-amber-400 active:scale-95 transition-all shadow-lg shadow-amber-500/25 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-amber-500"
                   >
-                    <span>Proceed to Checkout · Rs. {total.toLocaleString()}</span>
+                    <span>
+                      {orderType === 'delivery' && !deliveryDistanceBand
+                        ? 'Choose delivery distance'
+                        : `Proceed to Checkout · Rs. ${total.toLocaleString()}`}
+                    </span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>

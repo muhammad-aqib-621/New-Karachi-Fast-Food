@@ -66,7 +66,6 @@ export interface BranchLocation {
   timing: string;
   openTimeHour: number; // 10 (10 AM)
   closeTimeHour: number; // 2 (2 AM)
-  isOpen: boolean;
   deliveryRangeKm: number;
 }
 
@@ -79,19 +78,18 @@ export interface CustomerDetails {
 
 export type OrderType = 'delivery' | 'pickup';
 export type PaymentMethod = 'cod' | 'jazzcash' | 'card';
+export type DeliveryDistanceBand = 'within-3' | '3-5' | '5-8' | 'over-8';
 
-export interface OrderConfirmation {
-  orderId: string;
+export interface PreparedOrder {
   items: CartItem[];
   orderType: OrderType;
+  deliveryDistanceBand: DeliveryDistanceBand | null;
   branch: BranchLocation;
   customer: CustomerDetails;
   subtotal: number;
   discount: number;
   deliveryFee: number;
-  tax: number;
   total: number;
   paymentMethod: PaymentMethod;
-  estimatedDeliveryMinutes: number;
   createdAt: string;
 }

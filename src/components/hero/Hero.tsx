@@ -37,7 +37,7 @@ export const Hero: React.FC = () => {
             {/* Delivery hours & Location notice */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs font-bold text-amber-700 dark:text-amber-400 mb-6">
               <Clock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-              <span>Delivering 10:00 AM – 2:00 AM Daily</span>
+              <span>Delivery &amp; pickup available daily</span>
               <span className="text-slate-400">·</span>
               <span className="text-slate-700 dark:text-slate-300">Mirpur AJK</span>
             </div>
@@ -140,6 +140,7 @@ export const Hero: React.FC = () => {
               <img
                 src={FOOD_ASSETS.hero}
                 alt="New Karachi Fast Food feast with crispy zinger burger, gourmet pizza and royal falooda"
+                fetchPriority="high"
                 referrerPolicy="no-referrer"
                 className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
               />
@@ -163,8 +164,8 @@ export const Hero: React.FC = () => {
                 <Clock className="w-5 h-5" />
               </div>
               <div className="text-left">
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Fast Dispatch</p>
-                <p className="text-sm font-extrabold text-slate-900 dark:text-white">15-Min Delivery</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Freshly prepared</p>
+                <p className="text-sm font-extrabold text-slate-900 dark:text-white">Made to order</p>
               </div>
             </motion.div>
 

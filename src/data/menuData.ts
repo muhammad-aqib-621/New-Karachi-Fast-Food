@@ -1,30 +1,64 @@
-import { BranchLocation, MenuItem } from '../types/restaurant';
+import { BranchLocation, DeliveryDistanceBand, MenuItem } from '../types/restaurant';
+import hero from '../assets/images/hero_fast_food_spread_1791999964657.jpg';
+import zingerBurger from '../assets/images/crispy_zinger_burger_1791999966667.jpg';
+import karachiSpecialBurger from '../assets/images/karachi_special_burger_1792005238138.jpg';
+import charcoalGrillBurger from '../assets/images/charcoal_grill_burger_1792004908615.jpg';
+import doubleTakerBurger from '../assets/images/double_taker_burger_1792005373247.jpg';
+import tikkaPizza from '../assets/images/gourmet_pizza_special_1791999966485.jpg';
+import crownPizza from '../assets/images/crown_crust_pizza_1792004831394.jpg';
+import malaiBotiPizza from '../assets/images/malai_boti_pizza_1792005238243.jpg';
+import crispyBroast from '../assets/images/loaded_fries_crispy_broast_1791999968061.jpg';
+import spicyBroast from '../assets/images/spicy_crispy_broast_1792004909347.jpg';
+import hotShots from '../assets/images/hot_shots_poppers_1792005239449.jpg';
+import hotWings from '../assets/images/crispy_spicy_wings_1792005372777.jpg';
+import zingerParatha from '../assets/images/zinger_paratha_roll_1792004832658.jpg';
+import shawarmaPlatter from '../assets/images/shawarma_platter_deluxe_1792005238489.jpg';
+import clubSandwich from '../assets/images/triple_club_sandwich_1792004833342.jpg';
+import loadedFries from '../assets/images/loaded_cheesy_fries_1792004910053.jpg';
+import cheesePasta from '../assets/images/cheesy_baked_alfredo_pasta_1792005239639.jpg';
+import specialFalooda from '../assets/images/signature_special_falooda_1791999967123.jpg';
+import shakarpuriBowl from '../assets/images/shakarpuri_falooda_bowl_1792004910286.jpg';
+import superMixShake from '../assets/images/creamy_super_mix_shake_1792004832964.jpg';
+import datesShake from '../assets/images/creamy_dates_shake_1792005373572.jpg';
+import mintMargarita from '../assets/images/fresh_mint_margarita_1792004832544.jpg';
 
-// Every single item has a unique, high-resolution food photograph
 export const FOOD_ASSETS = {
-  hero: '/src/assets/images/hero_fast_food_spread_1791999964657.jpg',
-  zingerBurger: '/src/assets/images/crispy_zinger_burger_1791999966667.jpg',
-  karachiSpecialBurger: '/src/assets/images/karachi_special_burger_1792005238138.jpg',
-  charcoalGrillBurger: '/src/assets/images/charcoal_grill_burger_1792004908615.jpg',
-  doubleTakerBurger: '/src/assets/images/double_taker_burger_1792005373247.jpg',
-  tikkaPizza: '/src/assets/images/gourmet_pizza_special_1791999966485.jpg',
-  crownPizza: '/src/assets/images/crown_crust_pizza_1792004831394.jpg',
-  malaiBotiPizza: '/src/assets/images/malai_boti_pizza_1792005238243.jpg',
-  crispyBroast: '/src/assets/images/loaded_fries_crispy_broast_1791999968061.jpg',
-  spicyBroast: '/src/assets/images/spicy_crispy_broast_1792004909347.jpg',
-  hotShots: '/src/assets/images/hot_shots_poppers_1792005239449.jpg',
-  hotWings: '/src/assets/images/crispy_spicy_wings_1792005372777.jpg',
-  zingerParatha: '/src/assets/images/zinger_paratha_roll_1792004832658.jpg',
-  shawarmaPlatter: '/src/assets/images/shawarma_platter_deluxe_1792005238489.jpg',
-  clubSandwich: '/src/assets/images/triple_club_sandwich_1792004833342.jpg',
-  loadedFries: '/src/assets/images/loaded_cheesy_fries_1792004910053.jpg',
-  cheesePasta: '/src/assets/images/cheesy_baked_alfredo_pasta_1792005239639.jpg',
-  specialFalooda: '/src/assets/images/signature_special_falooda_1791999967123.jpg',
-  shakarpuriBowl: '/src/assets/images/shakarpuri_falooda_bowl_1792004910286.jpg',
-  superMixShake: '/src/assets/images/creamy_super_mix_shake_1792004832964.jpg',
-  datesShake: '/src/assets/images/creamy_dates_shake_1792005373572.jpg',
-  mintMargarita: '/src/assets/images/fresh_mint_margarita_1792004832544.jpg',
+  hero,
+  zingerBurger,
+  karachiSpecialBurger,
+  charcoalGrillBurger,
+  doubleTakerBurger,
+  tikkaPizza,
+  crownPizza,
+  malaiBotiPizza,
+  crispyBroast,
+  spicyBroast,
+  hotShots,
+  hotWings,
+  zingerParatha,
+  shawarmaPlatter,
+  clubSandwich,
+  loadedFries,
+  cheesePasta,
+  specialFalooda,
+  shakarpuriBowl,
+  superMixShake,
+  datesShake,
+  mintMargarita,
 };
+
+export function isBranchOpen(branch: BranchLocation, date = new Date()): boolean {
+  const hour = Number(
+    new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Asia/Karachi',
+      hour: '2-digit',
+      hourCycle: 'h23',
+    }).format(date)
+  );
+  return branch.closeTimeHour <= branch.openTimeHour
+    ? hour >= branch.openTimeHour || hour < branch.closeTimeHour
+    : hour >= branch.openTimeHour && hour < branch.closeTimeHour;
+}
 
 export const BRANCH_LOCATIONS: BranchLocation[] = [
   {
@@ -39,7 +73,6 @@ export const BRANCH_LOCATIONS: BranchLocation[] = [
     timing: '10:00 AM – 2:00 AM Daily',
     openTimeHour: 10,
     closeTimeHour: 2,
-    isOpen: true,
     deliveryRangeKm: 8,
   },
   {
@@ -54,7 +87,6 @@ export const BRANCH_LOCATIONS: BranchLocation[] = [
     timing: '10:00 AM – 1:00 AM Daily',
     openTimeHour: 10,
     closeTimeHour: 1,
-    isOpen: true,
     deliveryRangeKm: 6,
   },
   {
@@ -69,9 +101,19 @@ export const BRANCH_LOCATIONS: BranchLocation[] = [
     timing: '11:00 AM – 2:00 AM Daily',
     openTimeHour: 11,
     closeTimeHour: 2,
-    isOpen: true,
     deliveryRangeKm: 10,
   },
+];
+
+export const DELIVERY_DISTANCE_BANDS: {
+  id: DeliveryDistanceBand;
+  label: string;
+  fee: number;
+}[] = [
+  { id: 'within-3', label: 'Up to 3 km', fee: 0 },
+  { id: '3-5', label: 'Over 3 to 5 km', fee: 50 },
+  { id: '5-8', label: 'Over 5 to 8 km', fee: 100 },
+  { id: 'over-8', label: 'Over 8 km', fee: 150 },
 ];
 
 const STANDARD_TOPPINGS = [

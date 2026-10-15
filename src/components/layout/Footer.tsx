@@ -1,5 +1,5 @@
 import React from 'react';
-import { Phone, Clock, MapPin, MessageSquare, Heart } from 'lucide-react';
+import { Phone, Clock, MapPin, MessageSquare } from 'lucide-react';
 import { BRANCH_LOCATIONS } from '../../data/menuData';
 import { KarachiLogo } from '../brand/KarachiLogo';
 
@@ -17,10 +17,10 @@ export const Footer: React.FC = () => {
               Serving legendary handcrafted Zinger Burgers, stone-baked Crown Crust Pizzas, and iconic Royal Falooda in Mirpur Azad Kashmir since 1998.
             </p>
             <div className="text-xs text-slate-700 dark:text-slate-300 space-y-1">
-              <p className="font-semibold text-slate-900 dark:text-white">Delivery Hours:</p>
+              <p className="font-semibold text-slate-900 dark:text-white">Branch Hours:</p>
               <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold">
                 <Clock className="w-3.5 h-3.5" />
-                <span>10:00 AM – 2:00 AM Daily</span>
+                <span>Hours vary by location</span>
               </div>
             </div>
           </div>
@@ -115,7 +115,7 @@ export const Footer: React.FC = () => {
 
             <div className="pt-2">
               <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
-                Accepted Payments
+                Payment Preferences (Confirm with Branch)
               </p>
               <div className="flex flex-wrap items-center gap-2">
                 <span className="px-2 py-1 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10px] font-bold text-slate-800 dark:text-slate-200 shadow-sm">
@@ -141,11 +141,6 @@ export const Footer: React.FC = () => {
           <p>
             © {new Date().getFullYear()} New Karachi Fast Food &amp; Special Falooda. All rights reserved.
           </p>
-          <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
-            <span>Crafted with</span>
-            <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" />
-            <span>for Mirpur Food Lovers</span>
-          </div>
         </div>
 
       </div>
